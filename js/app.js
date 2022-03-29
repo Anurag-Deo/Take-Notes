@@ -2,8 +2,9 @@ console.log('Welcome to the notes app. This app is designed by Anurag Deo')
 showNotes();
 let adddBtn = document.getElementById('addbtn');
 adddBtn.addEventListener("click",function(e){
-
+//if a user add a note
     let addTxt = document.getElementById("addTxt");
+    let addTitle = document.getElementById("addTitle");
     let notes = localStorage.getItem("notes");
     if (notes == null){
         notesObj = [];
@@ -11,9 +12,14 @@ adddBtn.addEventListener("click",function(e){
     else{
         notesObj = JSON.parse(notes);
     }
-    notesObj.push(addTxt.value);
+    let myObj = {
+        title:addTitle.value,
+        text:addTxt.value
+    }
+    notesObj.push(myObj);
     localStorage.setItem("notes",JSON.stringify(notesObj));
     addTxt.value = "";
+    addTitle.value = "";
     console.log(notesObj);
     showNotes();
 })
@@ -30,8 +36,8 @@ function showNotes(){
     notesObj.forEach(function(element,index) {
         html += `<div class="notecard card mx-2 my-2" style="width: 18rem;">
         <div class="card-body">
-            <h5 class="card-title">Note ${index+1}</h5>
-            <p class="card-text"> ${element}</p>
+            <h5 class="card-title">${element.title}</h5>
+            <p class="card-text"> ${element.text}</p>
             <button id ="${index}" onclick = "deleteNote(this.id)" class="btn btn-primary">Delete Note</button>
         </div>
     </div>`;
@@ -62,7 +68,7 @@ function deleteNote(index){
     showNotes();
 
 }
-
+// function to search a note
 let search = document.getElementById('searchTxt');
 search.addEventListener("input",function(){
 
@@ -71,7 +77,14 @@ search.addEventListener("input",function(){
     let notecards = document.getElementsByClassName('notecard');
     Array.from(notecards).forEach(function(element){
         let cardTxt = element.getElementsByTagName("p")[0].innerText.toLowerCase();
+        let cardTitle = element.getElementsByTagName("h5")[0].innerText.toLowerCase();
         if(cardTxt.includes(inputVal)){
+            element.style.display = "block";
+        }
+        else{
+            element.style.display = "none";
+        }
+        if(cardTitle.includes(inputVal)){
             element.style.display = "block";
         }
         else{
